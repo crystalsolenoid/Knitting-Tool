@@ -63,6 +63,23 @@ impl DirectedKnittingGraph {
         }
     }
 
+    pub fn k2tog(&mut self) -> Result<(), KnitError> {
+        let on_needle = [self.in_needle.pop(), self.in_needle.pop()];
+        let on_needle: Option<Vec<_>> = on_needle.into_iter().collect();
+        if let Some(on_needle) = on_needle {
+            let new_node = self.nodes + 1;
+            self.yarn_edges.push((self.nodes, new_node));
+            for needle_node in on_needle {
+                self.loop_edges.push((needle_node, new_node));
+            }
+            self.out_needle.push(new_node);
+            self.nodes += 1;
+            Ok(())
+        } else {
+            Err(KnitError::NeedleEmpty)
+        }
+    }
+
     pub fn dot(&self) -> String {
         let mut dot = String::new();
         dot.push_str("Digraph {\n");

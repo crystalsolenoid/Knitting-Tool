@@ -7,6 +7,7 @@ enum Stitch {
     Knit,
     Purl,
     CastOn,
+    K2Tog,
 }
 
 fn main() {
@@ -30,8 +31,7 @@ fn knit_test() -> Result<DirectedKnittingGraph, KnitError> {
     fabric.knit()?;
     fabric.turn();
     fabric.knit()?;
-    fabric.knit()?;
-    fabric.knit()?;
+    fabric.k2tog()?;
     fabric.knit()?;
     fabric.knit()?;
 
