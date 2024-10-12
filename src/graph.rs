@@ -80,6 +80,13 @@ impl DirectedKnittingGraph {
         }
     }
 
+    pub fn yo(&mut self) {
+        let new_node = self.nodes + 1;
+        self.yarn_edges.push((self.nodes, new_node));
+        self.out_needle.push(new_node);
+        self.nodes += 1;
+    }
+
     pub fn dot(&self) -> String {
         let mut dot = String::new();
         dot.push_str("Digraph {\n");

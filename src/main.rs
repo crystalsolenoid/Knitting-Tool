@@ -25,6 +25,7 @@ fn knit_test() -> Result<DirectedKnittingGraph, KnitError> {
     fabric.cast_on(1);
     fabric.turn();
     fabric.knit()?;
+    fabric.yo();
     fabric.knit()?;
     fabric.knit()?;
     fabric.knit()?;
@@ -32,6 +33,7 @@ fn knit_test() -> Result<DirectedKnittingGraph, KnitError> {
     fabric.turn();
     fabric.knit()?;
     fabric.k2tog()?;
+    fabric.knit()?;
     fabric.knit()?;
     fabric.knit()?;
 
