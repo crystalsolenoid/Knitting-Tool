@@ -83,6 +83,16 @@ impl DirectedKnittingGraph {
         self.out_needle.push(new_node);
     }
 
+    /// TODO need to add error checking
+    pub fn m1r(&mut self) {
+        let next_node = *self.in_needle.last().unwrap();
+        let prev_node = self.node_below(*self.out_needle.last().unwrap());
+        let make_node = self.insert_yarn(next_node, prev_node);
+        self.in_needle.push(make_node);
+        self.knit();
+        //self.yarn_edges.push((self.nodes, new_node));
+    }
+
     fn draw_yarn(&mut self) -> usize {
         self.nodes += 1;
         let new_node = self.nodes;
@@ -116,6 +126,12 @@ impl DirectedKnittingGraph {
 
         self.nodes += 1;
         new_node
+    }
+
+    /// TODO need to add error checking
+    fn node_below(&self, node: usize) -> usize {
+        let below = self.loop_edges.iter().find(|(_, b)| *b == node).unwrap().0;
+        below
     }
 
     pub fn dot(&self) -> String {

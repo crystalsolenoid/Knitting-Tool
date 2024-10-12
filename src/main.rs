@@ -32,9 +32,10 @@ fn knit_test() -> Result<DirectedKnittingGraph, KnitError> {
     fabric.knit()?;
     fabric.turn();
     fabric.knit()?;
+    fabric.m1r();
+    fabric.knit()?;
+    fabric.knit()?;
     fabric.k2tog()?;
-    fabric.knit()?;
-    fabric.knit()?;
     fabric.knit()?;
 
     Ok(fabric)
