@@ -37,12 +37,14 @@ impl DirectedKnittingGraph {
     }
 
     pub fn cast_on(&mut self, n: usize) {
+        // Can I find a way to use draw_yarn() for this?
         let nodes = self.nodes;
         self.yarn_edges.extend(
             (nodes..nodes + n).zip(nodes+1..nodes + n + 1)
         );
         self.out_needle.extend(nodes + 1..nodes + n + 1);
         self.nodes += n;
+        self.fresh_node = self.nodes;
     }
 
     pub fn turn(&mut self) {
@@ -52,11 +54,9 @@ impl DirectedKnittingGraph {
     pub fn knit(&mut self) -> Result<(), KnitError> {
         let on_needle = self.in_needle.pop();
         if let Some(on_needle) = on_needle {
-            let new_node = self.nodes + 1;
-            self.yarn_edges.push((self.nodes, new_node));
+            let new_node = self.draw_yarn();
             self.loop_edges.push((on_needle, new_node));
             self.out_needle.push(new_node);
-            self.nodes += 1;
             Ok(())
         } else {
             Err(KnitError::NeedleEmpty)
@@ -67,13 +67,11 @@ impl DirectedKnittingGraph {
         let on_needle = [self.in_needle.pop(), self.in_needle.pop()];
         let on_needle: Option<Vec<_>> = on_needle.into_iter().collect();
         if let Some(on_needle) = on_needle {
-            let new_node = self.nodes + 1;
-            self.yarn_edges.push((self.nodes, new_node));
+            let new_node = self.draw_yarn();
             for needle_node in on_needle {
                 self.loop_edges.push((needle_node, new_node));
             }
             self.out_needle.push(new_node);
-            self.nodes += 1;
             Ok(())
         } else {
             Err(KnitError::NeedleEmpty)
@@ -81,10 +79,16 @@ impl DirectedKnittingGraph {
     }
 
     pub fn yo(&mut self) {
-        let new_node = self.nodes + 1;
-        self.yarn_edges.push((self.nodes, new_node));
+        let new_node = self.draw_yarn();
         self.out_needle.push(new_node);
+    }
+
+    fn draw_yarn(&mut self) -> usize {
         self.nodes += 1;
+        let new_node = self.nodes;
+        self.yarn_edges.push((self.fresh_node, new_node));
+        self.fresh_node = new_node;
+        new_node
     }
 
     pub fn dot(&self) -> String {
