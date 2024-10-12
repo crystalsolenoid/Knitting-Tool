@@ -91,6 +91,33 @@ impl DirectedKnittingGraph {
         new_node
     }
 
+    /// TODO need to add error checking
+    fn insert_yarn(&mut self, a: usize, b: usize) -> usize {
+        let (position, order) = self.yarn_edges.iter().enumerate().find_map(|(i, &edge)| {
+            if edge == (a, b) {
+                Some((i, true))
+            } else if edge == (b, a) {
+                Some((i, false))
+            } else {
+                None
+            }
+        }).unwrap();
+
+        let new_node = self.nodes + 1;
+
+        if order {
+            self.yarn_edges.push((a, new_node));
+            self.yarn_edges.push((new_node, b));
+        } else {
+            self.yarn_edges.push((b, new_node));
+            self.yarn_edges.push((new_node, a));
+        }
+        self.yarn_edges.swap_remove(position);
+
+        self.nodes += 1;
+        new_node
+    }
+
     pub fn dot(&self) -> String {
         let mut dot = String::new();
         dot.push_str("Digraph {\n");
